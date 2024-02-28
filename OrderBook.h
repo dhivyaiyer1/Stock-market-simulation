@@ -1,35 +1,48 @@
 #pragma once
-#include <vector>
 #include "LimitOrder.h"
+#include <queue>
+#include <deque>
 #include <unordered_map>
 
 class LimitOrder;
 
-using namespace std;
-
-class OrderBook {
-    private:
-    vector<vector<LimitOrder*>> orders;
-    bool buy;
-    void swap(int x, int y);
-    static int parent (int i);
-    static int left(int i);
-    static int right (int i);
-    void heapify(int i);
-    void updateIndex(int i);
-    void remove(int i);
-    bool lessThan(int i, int j);
-    bool greaterThan(int i, int j);
-
+class OrderBook 
+{
     public:
-    unordered_map<double,int> map;
     OrderBook(bool b) : buy(b) {};
 	~OrderBook();
+    int price();
     LimitOrder* peek();
-    void poll();
+    void pop();
     void cancel(LimitOrder* lo);
     void insert(LimitOrder* lo);
-    void printAllOrders();
-    void changePrice(LimitOrder* lo, double newPrice);
-    bool isEmpty();
+    void print();
+
+    private:
+    bool buy;
+    class PriceLevel
+    {
+        private:
+        LimitOrder* head;
+        LimitOrder* tail;
+        void adjust();
+
+        public:
+        int price;
+        PriceLevel(LimitOrder* lo);
+        ~PriceLevel();
+        LimitOrder* peek();
+        void pop();
+        void insert(LimitOrder* lo);
+        void cancel(LimitOrder* lo);
+        bool isEmpty();
+        void print();
+    };
+    class Compare
+    {
+        bool operator(PriceLevel* below, PriceLevel* above);
+    };
+    std::priority_queue<PriceLevel*, std::deque<PriceLevel*>, Compare> prices;
+    std::unordered_map<int, PriceLevel*> price_map;
+    void adjust();
 };

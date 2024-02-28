@@ -1,6 +1,5 @@
 #include "Order.h"
 #include <iostream>
-#include "Company.h"
 
 Order::Order(std::string on, Person* p,int q, bool b) 
     : orderName(on)
@@ -8,8 +7,6 @@ Order::Order(std::string on, Person* p,int q, bool b)
     , quantity(q)
     , buy(b)
 {}
-
-
 
 void Order::printInfo() {
     if (buy) {

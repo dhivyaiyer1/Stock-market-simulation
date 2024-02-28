@@ -1,7 +1,6 @@
 #pragma once
 #include "LimitOrder.h"
 
-
 class CancelOrder : public Order
 {
     private:
@@ -13,6 +12,5 @@ class CancelOrder : public Order
     {
         std::cout<<"Deleting "<<orderName<<"\n";
     };
-    void add(MatchingEngine& meng);
     void print();
 };

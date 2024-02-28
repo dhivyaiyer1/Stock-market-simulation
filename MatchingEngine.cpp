@@ -1,17 +1,16 @@
 #include "MatchingEngine.h"
 #include <iostream>
-#include <typeinfo>
 #include "Person.h"
 
 
 MatchingEngine::MatchingEngine(std::string name)
     : buyOrders(1)
     , sellOrders(0)
-    , companyName(name)
+    , name(name)
 {}
 
 void MatchingEngine::print() {
-	std::cout<<"Printing matching engine:\n";
+	std::cout<<"Printing matching engine for "<<name<<":\n";
     buyOrders.printAllOrders();
     sellOrders.printAllOrders();
 }
@@ -24,9 +23,9 @@ double MatchingEngine::sellPrice() {
     return sellOrders.peek()->price;
 }
 
-void MatchingEngine::trade(Order* o1, LimitOrder* o2) {
-    int q = o1->quantity<=o2->quantity ? o1->quantity : o2->quantity;
-    double price = o2->price;
+void MatchingEngine::trade(Order* sell, Order* buy) {
+    int q = sell->quantity <= buy->quantity ? sell->quantity : buy->quantity;
+    double price = buy->price;
     /*
     o1->quantity-=q;
     o2->quantity-=q;
@@ -37,44 +36,60 @@ void MatchingEngine::trade(Order* o1, LimitOrder* o2) {
     o1->person->money += cash_exchange;
     o2->person->shares += q_exchange;
     o2->person->money -= cash_exchange;*/
-    if (!(o1->execute(companyName,q,price)))
+    if (!(sell->person->canSell(name, q, price))) 
     {
-        cancel(o1);
+        std::cout<<"Order "<<sell->orderName<<" failed\n";
+        cancel(sell);
     }
-    else if (!(o2->execute(companyName,q,price)))
+    else if (!(buy->person->canBuy(q, price)))
     {
-        cancel(o2);
+        std::cout<<"Order "<<buy->orderName<<" failed\n";
+        cancel(buy);
     }
     else
     {
-        std::cout<<"Traded "<<q<<" of "<<o1->orderName<<" and "<<o2->orderName<<" @ $"<<price<<"\n";
+        sell->execute(name,q,price);
+        buy->execute(q,price);
+        std::cout<<"Traded "<<q<<" of "<<sell->orderName<<" and "<<buy->orderName<<" @ $"<<price<<"\n";
     }
+        
 }
 
 void MatchingEngine::matchLimitOrders() {
     while (!buyOrders.isEmpty() && !sellOrders.isEmpty() && buyPrice()>=sellPrice()) {
-        LimitOrder* l1 = sellOrders.peek();
-        LimitOrder* l2 = buyOrders.peek();
-        trade(l1,l2);
-        if (l1->quantity==0) {
-			sellOrders.poll();
-			delete l1;
+        LimitOrder* sell = sellOrders.peek();
+        LimitOrder* buy = buyOrders.peek();
+        trade(sell,buy);
+        if (sell->quantity==0) {
+			sellOrders.pop();
         }
-        if (l2->quantity==0) {
-			buyOrders.poll();
-			delete l2;
+        if (buy->quantity==0) {
+			buyOrders.pop();
         }
     }
 }
 
-void MatchingEngine::cancel(LimitOrder* lo)
+void MatchingEngine::add(LimitOrder* lo)
 {
     OrderBook& orders = lo->buy ? buyOrders : sellOrders;
-    orders.cancel(lo);
-    delete lo;
+    orders.insert(lo);
+    matchLimitOrders();
 }
 
-void MatchingEngine::cancel(MarketOrder* mo) 
+void MatchingEngine::add(MarketOrder* mo)
 {
-    int x = 0;
+    OrderBook& orders = mo->buy ? sellOrders : buyOrders;
+    int market_price = orders->price();
+    LimitOrder* lo = new LimitOrder*(mo, market_price);
+    add(lo);
+    delete mo;
+    matchLimitOrders();
+}
+
+void MatchingEngine::add(CancelOrder* co)
+{
+    OrderBook& orders = co->buy ? buyOrders : sellOrders;
+    orders.cancel(co->order);
+    delete co;
+    matchLimitOrders();
 }

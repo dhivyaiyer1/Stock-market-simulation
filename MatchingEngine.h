@@ -4,22 +4,22 @@
 class Order;
 class MarketOrder;
 class LimitOrder;
+class CancelOrder;
 
 class MatchingEngine {
     private:
-    std::string companyName;
-
-    public:
     OrderBook buyOrders;
     OrderBook sellOrders;
     void matchLimitOrders();
-    void trade(Order* o1, LimitOrder* o2);
+    void trade(Order* sell, Order* buy);
     
-    
+    public:
+    std::string name;
     MatchingEngine(std::string name);
     void print();
     double buyPrice();
     double sellPrice();
-    void cancel(LimitOrder* lo);
-    void cancel(MarketOrder* mo);
+    void add(LimitOrder* lo);
+    void add(MarketOrder* mo);
+    void add(CancelOrder* co);
 };

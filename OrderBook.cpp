@@ -1,166 +1,158 @@
 #include "OrderBook.h"
 #include <iostream>
 
-OrderBook::~OrderBook() {
-	for (int i=0; i<orders.size(); i++) {
-		for (int j=0; j<orders[i].size(); j++) {
-			if (orders[i][j]!=NULL) {
-				delete orders[i][j];
-			}
-		}
-	}
+bool Compare::operator(PriceLevel* below, PriceLevel* above)
+{
+    // sell orders (bids) are in ascending order by price
+    // buy orders (asks) are in descending order by price
+    return buy ? above->price >= below->price : above->price <= below->price
 }
 
-void OrderBook::updateIndex(int i) {
-    double p = orders[i][0]->price;
-    if (map.contains(p)) {
-        map[p] = i;
-    }
+// PriceLevel functions
+
+PriceLevel::PriceLevel(LimitOrder* lo)
+    : price(lo->price)
+    , head(lo)
+    , tail(lo)
+{}
+
+void PriceLevel::adjust()
+{
+    if (head == nullptr && tail != nullptr) head = tail;
+    if (head != nullptr && tail == nullptr) tail = head;
 }
 
-void OrderBook::swap(int x, int y) {
-    std::vector<LimitOrder*> temp = orders[x];
-    orders[x]=orders[y];
-    orders[y]=temp;
-    updateIndex(x);
-    updateIndex(y);
+LimitOrder* PriceLevel::peek()
+{
+    return head;
 }
 
-int OrderBook::parent(int i) {
-    return (i-1)/2;
+void PriceLevel::pop()
+{
+    if (head == tail) tail = nullptr;
+    LimitOrder* lo = head;
+    LimitOrder* next = head->next;
+    head = next;
+    next->prev = nullptr;
+    lo->prev = nullptr;
+    lo->next = nullptr;
+    delete lo;
+    adjust();
 }
 
-int OrderBook::left(int i) {
-    return (2*i +1);
-}
-
-int OrderBook::right(int i) {
-    return (2*i +2);
-}
-
-LimitOrder* OrderBook::peek() {
-    return orders[0][0];
-}
-
-bool OrderBook::lessThan(int i, int j) {
-    if (buy) {
-        return orders[i][0]->price>orders[j][0]->price;
-    } else {
-        return orders[i][0]->price<orders[j][0]->price;
-    }
-}
-
-bool OrderBook::greaterThan(int i, int j) {
-    if (buy) {
-        return orders[i][0]->price<orders[j][0]->price;
-    } else {
-        return orders[i][0]->price>orders[j][0]->price;
-    }
-}
-
-void OrderBook::insert(LimitOrder* lo) {
-    if (lo->buy!=buy) {
-        std::cout<<"Error: buy is not the same\n";
-        return;
-    }
-    //int f = map.contains(lo->price);
-    if (!(map.contains(lo->price))) {
-        int i = orders.size();
-        map.insert({lo->price,i});
-        orders.push_back({lo});
-        updateIndex(i);
-        while (i != 0  && greaterThan(parent(i),i)) {
-            swap(i, parent(i));
-            i=parent(i);
-        }
-    } else {
-        orders[map[lo->price]].push_back(lo);
-    }
-}
-
-void OrderBook::printAllOrders() {
-    std::string buy_sell = buy ? "Buy" : "Sell";
-    std::cout<<buy_sell<<" prices:\n";
-    for (auto i : map)
+void PriceLevel::insert(LimitOrder* lo)
+{
+    if (isEmpty())
     {
-        std::cout<<i.first<<" ";
+        head = lo;
+    }
+    else
+    {
+        tail->next = lo;
+        lo->prev = tail;
+    }
+    tail = lo;
+}
+
+void PriceLevel::cancel(LimitOrder* lo)
+{
+    if (head == tail) tail = nullptr;
+    LimitOrder* prev = lo->prev;
+    LimitOrder* next = lo->next;
+    if (prev != nullptr) prev->next = next;
+    if (next != nullptr) next->prev = prev;
+    adjust();
+    delete lo;
+}
+
+bool PriceLevel::isEmpty()
+{
+    return head == nullptr && tail == nullptr;
+}
+
+void PriceLevel::print()
+{
+    std::cout<<"Price level for $"<<price<<":\n";
+    std::cout<<"Orders:\n";
+    LimitOrder* cur = head;
+    while (cur != nullptr)
+    {
+        cur->print();
+        cur = cur->next;
     }
     std::cout<<"\n";
-    std::cout<<buy_sell<<" orders:\n";
-    for (int i=0; i<orders.size(); i++) {
-        for (int j=0; j<orders[i].size(); j++) {
-            std::cout<<"("<<orders[i][j]->orderName<<", "<<orders[i][j]->price<<") ";
-        }
-        std::cout<<"\n";
+}
+
+// OrderBook functions
+
+int OrderBook::price()
+{
+    return prices->top()->price;
+}
+
+void OrderBook::adjust()
+{
+    PriceLevel* pl = prices.top();
+    while (pl->isEmpty())
+    {
+        prices.pop();
+        delete pl;
+        pl = prices.top();
+    }
+}
+
+LimitOrder* OrderBook::peek()
+{
+    adjust();
+    PriceLevel* pl = prices.top();
+    LimitOrder* lo = pl->peek();
+    return lo;
+}
+
+void OrderBook::pop()
+{
+    adjust();
+    LimitOrder* lo = peek();
+    adjust();
+    delete lo;
+
+void OrderBook::insert(LimitOrder* lo)
+{
+    PriceLevel* pl;
+    if (price_map.contains(lo->price))
+    {
+        pl = price_map.find(price);
+        pl->insert(lo);
+    }
+    else
+    {
+        pl = new PriceLevel(lo);
+        prices.push(pl);
+        price_map.insert({lo->price, pl});
+    }
+}
+
+void OrderBook::cancel(LimitOrder* lo)
+{
+    PriceLevel* pl = price_map.find(lo->price);
+    pl->cancel(lo);
+    adjust();
+}
+
+void OrderBook::print()
+{
+    if (buy)
+    {
+        std::cout<<"Buy";
+    }
+    else
+    {
+        std::cout<<"Sell";
+    }
+    std::cout<<" order book:\n";
+    for (auto* pl : prices)
+    {
+        pl->print();
     }
     std::cout<<"\n";
-}
-
-void OrderBook::heapify(int i) {
-    int l=left(i);
-    int r=right(i);
-    int smallest=i;
-    if (l<orders.size() && lessThan(l,i)) {
-        smallest=l;
-    }
-    if (r<orders.size() && lessThan(r,smallest)) {
-        smallest=r;
-    }
-    if (smallest != i) {
-        swap(i, smallest);
-        heapify(smallest);
-    }
-}
-
-void OrderBook::poll() {
-    if (orders.size()<=0) {
-        std::cout<<"Error: OrderBook is empty\n";
-    }
-    LimitOrder* root=orders[0][0];
-    orders[0].erase(orders[0].begin());
-    if (orders[0].size()==0) {
-        orders[0] = orders.back();
-        updateIndex(0);
-        orders.pop_back();
-        heapify(0);
-        map.erase(root->price);
-    }
-}
-
-void OrderBook::remove(int i) {
-    while (i!=0 && greaterThan(parent(i),i)) {
-        swap(i,parent(i));
-        i = parent(i);
-    }
-}
-
-void OrderBook::cancel(LimitOrder* lo) {
-    std::cout<<"Canceling "<<lo->orderName<<"\n";
-    if (!(map.contains(lo->price))) {
-        std::cout<<lo->orderName<<" is not in this orderbook\n";
-        return;
-    }
-    int i = map[lo->price];
-    if (orders[i].size()>1) {
-        int j=0;
-        while (orders[i][j]!=lo) {
-            j++;
-        }
-        orders[i].erase(orders[i].begin()+j);
-    } else {
-        map.erase(lo->price);
-        lo->price = orders[0][0]->price-1+2*buy;
-        remove(i);
-        poll();
-    }
-}
-
-void OrderBook::changePrice(LimitOrder* lo, double newPrice) {
-    cancel(lo);
-    lo->price=newPrice;
-    insert(lo);
-}
-
-bool OrderBook::isEmpty() {
-    return orders.size()==0;
 }

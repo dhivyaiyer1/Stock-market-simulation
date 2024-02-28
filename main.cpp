@@ -1,5 +1,4 @@
 #include <iostream>
-#include "Company.h"
 #include "LimitOrder.h"
 #include "Person.h"
 #include "MarketOrder.h"
@@ -18,16 +17,8 @@ void placeOrder(Company& c, Order* o, bool print)
     }
 }
 
-void changePrice(Company&c, LimitOrder* o, double new_price)
-{
-    OrderBook& orders = o->buy ? c.meng.buyOrders : c.meng.sellOrders;
-    orders.changePrice(o,new_price);
-    c.print();
-}
-
 void test()
 {
-    Company appl ("Apple");
     Person panda ("Pan Da");
     Person polu ("Polu");
     Person penguin ("Penguin");
@@ -47,7 +38,6 @@ void test()
     placeOrder(appl, order7,0);
     CancelOrder* order8 = new CancelOrder("h",order2);
     placeOrder(appl, order8,1);
-    changePrice(appl, order5,25);
 }
 
 int main() {
