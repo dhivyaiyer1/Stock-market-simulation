@@ -1,14 +1,6 @@
 #include "Person.h"
 #include <iostream>
 
-~Person()
-{
-    for (const auto& [key,pair] : investments)
-    {
-        delete pair;
-    }
-}
-
 void Person::printInfo() {
     std::cout<<name<<"\n";
     std::cout<<"$"<<money<<"\n";
@@ -26,7 +18,7 @@ bool Person::canBuy(unsigned int shares, double value)
     return money >= shares*value;
 }
 
-bool Person::canSell(string CompanyName, unsigned int shares, double value)
+bool Person::canSell(string CompanyName, unsigned int shares)
 {
     return investments.contains(CompanyName) && investments[CompanyName]->first >= shares;
 }
@@ -36,11 +28,10 @@ void Person::buy(string CompanyName, unsigned int shares, double value)
     if (investments.contains(CompanyName))
     {
         investments[CompanyName]->first += shares;
-        investments[CompanyName]->second = value;
     }
     else
     {
-        investments[CompanyName] = new Pair<int,double> (shares,value);
+        investments[CompanyName] = shares;
     }
     money -= shares*value;
 }
@@ -48,6 +39,5 @@ void Person::buy(string CompanyName, unsigned int shares, double value)
 void Person::sell(string CompanyName, unsigned int shares, double value)
 {
     investments[CompanyName]->first -= shares;
-    investments[CompanyName]->second = value;
     money += shares*value;
 }
