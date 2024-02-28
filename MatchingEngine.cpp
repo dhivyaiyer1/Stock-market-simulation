@@ -59,32 +59,8 @@ void MatchingEngine::matchLimitOrders() {
     }
 }
 
-void MatchingEngine::add(LimitOrder* lo)
-{
-    OrderBook& orders = lo->buy ? buyOrders : sellOrders;
-    orders.insert(lo);
-    matchLimitOrders();
-}
-
-void MatchingEngine::add(MarketOrder* mo)
-{
-    OrderBook& orders = mo->buy ? sellOrders : buyOrders;
-    int market_price = orders->price();
-    LimitOrder* lo = new LimitOrder*(mo, market_price);
-    add(lo);
-    delete mo;
-    matchLimitOrders();
-}
-
-void MatchingEngine::add(CancelOrder* co)
-{
-    OrderBook& orders = co->buy ? buyOrders : sellOrders;
-    orders.cancel(co->order);
-    delete co;
-    matchLimitOrders();
-}
-
 void MatchingEngine::add(Order* order)
 {
     order->action(this);
+    matchLimitOrders();
 }

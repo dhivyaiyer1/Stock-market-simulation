@@ -1,7 +1,7 @@
 all: clean stockmarket
 
-stockmarket: Company LimitOrder MarketOrder CancelOrder MatchingEngine Order OrderBook Person main
-	g++ -std=c++2a -O0 -ggdb3 -o stockmarket Company.o LimitOrder.o MarketOrder.o CancelOrder.o MatchingEngine.o Order.o OrderBook.o Person.o main.o
+stockmarket: LimitOrder MarketOrder CancelOrder MatchingEngine Order OrderBook Person main
+	g++ -std=c++2a -O0 -ggdb3 -o stockmarket LimitOrder.o MarketOrder.o CancelOrder.o MatchingEngine.o Order.o OrderBook.o Person.o main.o
 
 LimitOrder: LimitOrder.cpp
 	g++ -O0 -ggdb3 -c -std=c++2a LimitOrder.cpp

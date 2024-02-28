@@ -10,3 +10,12 @@ void MarketOrder::print() {
     printInfo();
     std::cout<<"\n\n";
 }
+
+void MarketOrder::action(MatchingEngine& meng)
+{
+    OrderBook& orders = buy ? meng.sellOrders :meng.buyOrders;
+    int market_price = orders->price();
+    LimitOrder* lo = new LimitOrder*(this, market_price);
+    lo.action(meng);
+    delete this;
+}

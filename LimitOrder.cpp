@@ -21,3 +21,9 @@ void LimitOrder::print() {
     printInfo();
     std::cout<<"$"<<price<<"\n\n";
 }
+
+void LimitOrder::action(MatchingEngine& meng)
+{
+    OrderBook& orders = buy ? meng.buyOrders : meng.sellOrders;
+    orders.insert(this);
+}

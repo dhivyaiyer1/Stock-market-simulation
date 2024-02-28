@@ -10,3 +10,10 @@ void CancelOrder::print() {
     std::cout<<"Cancel ";
     order->print();
 }
+
+void CancelOrder::action(MatchingEngine& meng)
+{
+    OrderBook& orders = buy ? meng.buyOrders : meng.sellOrders;
+    orders.cancel(order);
+    delete this;
+}
