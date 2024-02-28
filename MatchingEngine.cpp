@@ -26,16 +26,6 @@ double MatchingEngine::sellPrice() {
 void MatchingEngine::trade(Order* sell, Order* buy) {
     int q = sell->quantity <= buy->quantity ? sell->quantity : buy->quantity;
     double price = buy->price;
-    /*
-    o1->quantity-=q;
-    o2->quantity-=q;
-    int mult = o1->buy ? -1 : 1;
-    unsigned int q_exchange = mult*q;
-    double cash_exchange = q_exchange*price;
-    o1->person->shares -= q_exchange;
-    o1->person->money += cash_exchange;
-    o2->person->shares += q_exchange;
-    o2->person->money -= cash_exchange;*/
     if (!(sell->person->canSell(name, q, price))) 
     {
         std::cout<<"Order "<<sell->orderName<<" failed\n";
@@ -92,4 +82,9 @@ void MatchingEngine::add(CancelOrder* co)
     orders.cancel(co->order);
     delete co;
     matchLimitOrders();
+}
+
+void MatchingEngine::add(Order* order)
+{
+    order->action(this);
 }

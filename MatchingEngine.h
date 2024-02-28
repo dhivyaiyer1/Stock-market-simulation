@@ -19,7 +19,5 @@ class MatchingEngine {
     void print();
     double buyPrice();
     double sellPrice();
-    void add(LimitOrder* lo);
-    void add(MarketOrder* mo);
-    void add(CancelOrder* co);
+    void add(Order* order);
 };

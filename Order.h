@@ -3,6 +3,7 @@
 #include <iostream>
 
 class Person;
+class MatchingEngine;
 
 class Order {
     protected:
@@ -14,4 +15,5 @@ class Order {
     Order(std::string orderName,Person* p, int q, bool b);
     virtual void print();
     bool execute(std::string CompanyName, unsigned int shares, double value);
+    virtual void action(MatchingEngine& meng) = 0;
 };

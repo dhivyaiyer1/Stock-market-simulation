@@ -1,6 +1,5 @@
 #pragma once
 #include "Order.h"
-#include <string>
 
 class MarketOrder;
 class LimitOrder : public Order {
@@ -17,4 +16,5 @@ class LimitOrder : public Order {
         std::cout<<"Deleting "<<orderName<<"\n";
     };
     void print();
+    void action(MatchingEngine& meng);
 };

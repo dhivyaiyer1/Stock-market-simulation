@@ -13,4 +13,5 @@ class CancelOrder : public Order
         std::cout<<"Deleting "<<orderName<<"\n";
     };
     void print();
+    void action(MatchingEngine& meng);
 };
