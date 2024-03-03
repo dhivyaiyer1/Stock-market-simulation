@@ -8,9 +8,6 @@ class CancelOrder : public Order
 
     public:
     CancelOrder(std::string on,LimitOrder* order);
-    ~CancelOrder()
-    {
-        std::cout<<"Deleting "<<orderName<<"\n";
-    };
     void print();
+    void action(MatchingEngine& meng);
 };

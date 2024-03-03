@@ -9,7 +9,7 @@ class Person {
     double money;
     int shares;
     unordered_map<string,int> investments;
-
+    bool has(string CompanyName);
 
     public:
     string name;

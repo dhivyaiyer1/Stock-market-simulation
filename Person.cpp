@@ -1,6 +1,11 @@
 #include "Person.h"
 #include <iostream>
 
+bool Person::has(string CompanyName)
+{
+    return investments.find(CompanyName) != investments.end();
+}
+
 void Person::printInfo() {
     std::cout<<name<<"\n";
     std::cout<<"$"<<money<<"\n";
@@ -20,14 +25,14 @@ bool Person::canBuy(unsigned int shares, double value)
 
 bool Person::canSell(string CompanyName, unsigned int shares)
 {
-    return investments.contains(CompanyName) && investments[CompanyName]->first >= shares;
+    return has(CompanyName) && investments[CompanyName] >= shares;
 }
 
 void Person::buy(string CompanyName, unsigned int shares, double value)
 {
-    if (investments.contains(CompanyName))
+    if (has(CompanyName))
     {
-        investments[CompanyName]->first += shares;
+        investments[CompanyName] += shares;
     }
     else
     {
@@ -38,6 +43,6 @@ void Person::buy(string CompanyName, unsigned int shares, double value)
 
 void Person::sell(string CompanyName, unsigned int shares, double value)
 {
-    investments[CompanyName]->first -= shares;
+    investments[CompanyName] -= shares;
     money += shares*value;
 }

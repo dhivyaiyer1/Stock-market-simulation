@@ -1,5 +1,7 @@
 #include "Order.h"
 #include <iostream>
+#include "MatchingEngine.h"
+#include "Person.h"
 
 Order::Order(std::string on, Person* p,int q, bool b) 
     : orderName(on)
@@ -32,7 +34,7 @@ bool Order::execute(std::string CompanyName, unsigned int shares, double value)
     {
         person->buy(CompanyName, shares, value);
     }
-    else if (!buy && person->canSell(CompanyName, shares, value))
+    else if (!buy && person->canSell(CompanyName, shares))
     {
         person->sell(CompanyName, shares, value);
     }

@@ -1,5 +1,5 @@
 #include "CancelOrder.h"
-#include <iostream>
+#include "MatchingEngine.h"
 
 CancelOrder::CancelOrder(std::string on,LimitOrder* order)
     : Order(on, order->person, order->quantity, order->buy)
@@ -9,4 +9,11 @@ CancelOrder::CancelOrder(std::string on,LimitOrder* order)
 void CancelOrder::print() {
     std::cout<<"Cancel ";
     order->print();
+}
+
+void CancelOrder::action(MatchingEngine& meng)
+{
+    OrderBook& orders = buy ? meng.buyOrders : meng.sellOrders;
+    orders.cancel(order);
+    delete this;
 }

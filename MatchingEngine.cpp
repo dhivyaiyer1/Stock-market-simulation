@@ -11,8 +11,8 @@ MatchingEngine::MatchingEngine(std::string name)
 
 void MatchingEngine::print() {
 	std::cout<<"Printing matching engine for "<<name<<":\n";
-    buyOrders.printAllOrders();
-    sellOrders.printAllOrders();
+    buyOrders.print();
+    sellOrders.print();
 }
 
 double MatchingEngine::buyPrice() {
@@ -23,33 +23,23 @@ double MatchingEngine::sellPrice() {
     return sellOrders.peek()->price;
 }
 
-void MatchingEngine::trade(Order* sell, Order* buy) {
+void MatchingEngine::trade(LimitOrder* sell, LimitOrder* buy) {
     int q = sell->quantity <= buy->quantity ? sell->quantity : buy->quantity;
     double price = buy->price;
-    /*
-    o1->quantity-=q;
-    o2->quantity-=q;
-    int mult = o1->buy ? -1 : 1;
-    unsigned int q_exchange = mult*q;
-    double cash_exchange = q_exchange*price;
-    o1->person->shares -= q_exchange;
-    o1->person->money += cash_exchange;
-    o2->person->shares += q_exchange;
-    o2->person->money -= cash_exchange;*/
-    if (!(sell->person->canSell(name, q, price))) 
+    if (!(sell->person->canSell(name, q))) 
     {
         std::cout<<"Order "<<sell->orderName<<" failed\n";
-        cancel(sell);
+        sell->quantity = 0;
     }
     else if (!(buy->person->canBuy(q, price)))
     {
         std::cout<<"Order "<<buy->orderName<<" failed\n";
-        cancel(buy);
+        buy->quantity = 0;
     }
     else
     {
         sell->execute(name,q,price);
-        buy->execute(q,price);
+        buy->execute(name,q,price);
         std::cout<<"Traded "<<q<<" of "<<sell->orderName<<" and "<<buy->orderName<<" @ $"<<price<<"\n";
     }
         
@@ -69,27 +59,8 @@ void MatchingEngine::matchLimitOrders() {
     }
 }
 
-void MatchingEngine::add(LimitOrder* lo)
+void MatchingEngine::add(Order* order)
 {
-    OrderBook& orders = lo->buy ? buyOrders : sellOrders;
-    orders.insert(lo);
-    matchLimitOrders();
-}
-
-void MatchingEngine::add(MarketOrder* mo)
-{
-    OrderBook& orders = mo->buy ? sellOrders : buyOrders;
-    int market_price = orders->price();
-    LimitOrder* lo = new LimitOrder*(mo, market_price);
-    add(lo);
-    delete mo;
-    matchLimitOrders();
-}
-
-void MatchingEngine::add(CancelOrder* co)
-{
-    OrderBook& orders = co->buy ? buyOrders : sellOrders;
-    orders.cancel(co->order);
-    delete co;
+    order->action(*this);
     matchLimitOrders();
 }
