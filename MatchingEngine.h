@@ -8,13 +8,13 @@ class CancelOrder;
 
 class MatchingEngine {
     private:
-    OrderBook buyOrders;
-    OrderBook sellOrders;
     void matchLimitOrders();
-    void trade(Order* sell, Order* buy);
+    void trade(LimitOrder* sell, LimitOrder* buy);
     
     public:
     std::string name;
+    OrderBook buyOrders;
+    OrderBook sellOrders;
     MatchingEngine(std::string name);
     void print();
     double buyPrice();

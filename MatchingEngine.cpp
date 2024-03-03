@@ -11,8 +11,8 @@ MatchingEngine::MatchingEngine(std::string name)
 
 void MatchingEngine::print() {
 	std::cout<<"Printing matching engine for "<<name<<":\n";
-    buyOrders.printAllOrders();
-    sellOrders.printAllOrders();
+    buyOrders.print();
+    sellOrders.print();
 }
 
 double MatchingEngine::buyPrice() {
@@ -23,23 +23,23 @@ double MatchingEngine::sellPrice() {
     return sellOrders.peek()->price;
 }
 
-void MatchingEngine::trade(Order* sell, Order* buy) {
+void MatchingEngine::trade(LimitOrder* sell, LimitOrder* buy) {
     int q = sell->quantity <= buy->quantity ? sell->quantity : buy->quantity;
     double price = buy->price;
-    if (!(sell->person->canSell(name, q, price))) 
+    if (!(sell->person->canSell(name, q))) 
     {
         std::cout<<"Order "<<sell->orderName<<" failed\n";
-        cancel(sell);
+        sell->quantity = 0;
     }
     else if (!(buy->person->canBuy(q, price)))
     {
         std::cout<<"Order "<<buy->orderName<<" failed\n";
-        cancel(buy);
+        buy->quantity = 0;
     }
     else
     {
         sell->execute(name,q,price);
-        buy->execute(q,price);
+        buy->execute(name,q,price);
         std::cout<<"Traded "<<q<<" of "<<sell->orderName<<" and "<<buy->orderName<<" @ $"<<price<<"\n";
     }
         
@@ -61,6 +61,6 @@ void MatchingEngine::matchLimitOrders() {
 
 void MatchingEngine::add(Order* order)
 {
-    order->action(this);
+    order->action(*this);
     matchLimitOrders();
 }

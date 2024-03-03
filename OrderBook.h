@@ -1,23 +1,11 @@
 #pragma once
-#include "LimitOrder.h"
 #include <queue>
 #include <deque>
 #include <unordered_map>
 
 class LimitOrder;
-
 class OrderBook 
 {
-    public:
-    OrderBook(bool b) : buy(b) {};
-	~OrderBook();
-    int price();
-    LimitOrder* peek();
-    void pop();
-    void cancel(LimitOrder* lo);
-    void insert(LimitOrder* lo);
-    void print();
-
     private:
     bool buy;
     class PriceLevel
@@ -40,9 +28,25 @@ class OrderBook
     };
     class Compare
     {
-        bool operator(PriceLevel* below, PriceLevel* above);
+        private:
+        bool buy;
+        
+        public:
+        Compare(bool buy);
+        bool operator()(PriceLevel* below, PriceLevel* above);
     };
-    std::priority_queue<PriceLevel*, std::deque<PriceLevel*>, Compare> prices;
+    std::priority_queue<OrderBook::PriceLevel*, std::deque<OrderBook::PriceLevel*>, OrderBook::Compare> prices;
     std::unordered_map<int, PriceLevel*> price_map;
     void adjust();
+
+    public:
+    OrderBook(bool b);
+	~OrderBook();
+    int price();
+    LimitOrder* peek();
+    void pop();
+    void cancel(LimitOrder* lo);
+    void insert(LimitOrder* lo);
+    void print();
+    bool isEmpty();
 };

@@ -1,33 +1,36 @@
 #include "OrderBook.h"
+#include "LimitOrder.h"
 #include <iostream>
 
-bool Compare::operator(PriceLevel* below, PriceLevel* above)
+// Compare functions
+OrderBook::Compare::Compare(bool buy) 
+    : buy(buy) 
+{}
+
+bool OrderBook::Compare::operator()(PriceLevel* below, PriceLevel* above)
 {
-    // sell orders (bids) are in ascending order by price
-    // buy orders (asks) are in descending order by price
-    return buy ? above->price >= below->price : above->price <= below->price
+    return buy ? above->price >= below->price : above->price <= below->price;
 }
 
 // PriceLevel functions
-
-PriceLevel::PriceLevel(LimitOrder* lo)
+OrderBook::PriceLevel::PriceLevel(LimitOrder* lo)
     : price(lo->price)
     , head(lo)
     , tail(lo)
 {}
 
-void PriceLevel::adjust()
+void OrderBook::PriceLevel::adjust()
 {
     if (head == nullptr && tail != nullptr) head = tail;
     if (head != nullptr && tail == nullptr) tail = head;
 }
 
-LimitOrder* PriceLevel::peek()
+LimitOrder* OrderBook::PriceLevel::peek()
 {
     return head;
 }
 
-void PriceLevel::pop()
+void OrderBook::PriceLevel::pop()
 {
     if (head == tail) tail = nullptr;
     LimitOrder* lo = head;
@@ -40,7 +43,7 @@ void PriceLevel::pop()
     adjust();
 }
 
-void PriceLevel::insert(LimitOrder* lo)
+void OrderBook::PriceLevel::insert(LimitOrder* lo)
 {
     if (isEmpty())
     {
@@ -54,7 +57,7 @@ void PriceLevel::insert(LimitOrder* lo)
     tail = lo;
 }
 
-void PriceLevel::cancel(LimitOrder* lo)
+void OrderBook::PriceLevel::cancel(LimitOrder* lo)
 {
     if (head == tail) tail = nullptr;
     LimitOrder* prev = lo->prev;
@@ -65,12 +68,12 @@ void PriceLevel::cancel(LimitOrder* lo)
     delete lo;
 }
 
-bool PriceLevel::isEmpty()
+bool OrderBook::PriceLevel::isEmpty()
 {
     return head == nullptr && tail == nullptr;
 }
 
-void PriceLevel::print()
+void OrderBook::PriceLevel::print()
 {
     std::cout<<"Price level for $"<<price<<":\n";
     std::cout<<"Orders:\n";
@@ -83,11 +86,27 @@ void PriceLevel::print()
     std::cout<<"\n";
 }
 
+OrderBook::PriceLevel::~PriceLevel()
+{
+    LimitOrder* cur = head;
+    while (cur != nullptr)
+    {
+        LimitOrder* next = cur->next;
+        delete cur;
+        cur = next;
+    }
+}
+
 // OrderBook functions
+
+OrderBook::OrderBook(bool b)
+    : buy(b)
+    , prices(OrderBook::Compare(b))
+{}
 
 int OrderBook::price()
 {
-    return prices->top()->price;
+    return prices.top()->price;
 }
 
 void OrderBook::adjust()
@@ -115,13 +134,15 @@ void OrderBook::pop()
     LimitOrder* lo = peek();
     adjust();
     delete lo;
+}
 
 void OrderBook::insert(LimitOrder* lo)
 {
+    auto it = price_map.find(lo->price);
     PriceLevel* pl;
-    if (price_map.contains(lo->price))
+    if (it != price_map.end())
     {
-        pl = price_map.find(price);
+        pl = it->second;
         pl->insert(lo);
     }
     else
@@ -134,7 +155,7 @@ void OrderBook::insert(LimitOrder* lo)
 
 void OrderBook::cancel(LimitOrder* lo)
 {
-    PriceLevel* pl = price_map.find(lo->price);
+    PriceLevel* pl = price_map.find(lo->price)->second;
     pl->cancel(lo);
     adjust();
 }
@@ -150,9 +171,26 @@ void OrderBook::print()
         std::cout<<"Sell";
     }
     std::cout<<" order book:\n";
-    for (auto* pl : prices)
+    for (const auto& [key, value] : price_map)
     {
-        pl->print();
+        value->print();
     }
     std::cout<<"\n";
+}
+
+bool OrderBook::isEmpty()
+{
+    for (const auto& [key, value] : price_map)
+    {
+        if (!(value->isEmpty())) return false;
+    }
+    return true;
+}
+
+OrderBook::~OrderBook()
+{
+    for (const auto& [key, value] : price_map)
+    {
+        delete value;
+    }
 }
