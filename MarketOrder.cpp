@@ -1,5 +1,6 @@
 #include "MarketOrder.h"
 #include "MatchingEngine.h"
+#include "LimitOrder.h"
 
 MarketOrder::MarketOrder(std::string on, Person* p, int q, bool b)
     : Order(on,p,q,b)

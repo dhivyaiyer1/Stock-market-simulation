@@ -1,7 +1,7 @@
 #include "MatchingEngine.h"
 #include <iostream>
 #include "Person.h"
-
+#include "LimitOrder.h"
 
 MatchingEngine::MatchingEngine(std::string name)
     : buyOrders(1)
