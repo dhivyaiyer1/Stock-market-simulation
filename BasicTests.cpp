@@ -1,6 +1,7 @@
 #include "BasicTests.h"
 
-BasicTests::BasicTests() : Test("Basic Tests")
+BasicTests::BasicTests() 
+    : Test("Basic Tests")
 {
     pn = new Person("Test Person");
     lo1 = new LimitOrder("Test Limit Order", pn, rand_price(), rand_int(), rand_bool());
@@ -28,47 +29,27 @@ void BasicTests::debug()
 void BasicTests::InitializeCancel()
 {
     std::string test_name = "BasicTests::InitializeCancel()";
-    if (co->buy != lo1->buy)
-    {
-        addError(test_name,"CancelOrder->buy != LimitOrder->buy");
-    }
-    if (co->quantity != lo1->quantity)
-    {
-        addError(test_name,"CancelOrder->quantity != LimitOrder->quantity");
-    }
-    if (co->person != lo1->person)
-    {
-        addError(test_name,"CancelOrder->person != LimitOrder->person");
-    }
+    test(co->buy != lo1->buy,test_name,"CancelOrder->buy != LimitOrder->buy");
+    test(co->quantity != lo1->quantity, test_name,"CancelOrder->quantity != LimitOrder->quantity");
+    test(co->person != lo1->person,test_name,"CancelOrder->person != LimitOrder->person");
 }
 
 // initializes a Limit order from a market order
 void BasicTests::Market2LimitOrder()
 {
     std::string test_name = "BasicTests::Market2LimitOrder()";
-    if (mo->buy != lo2->buy)
-    {
-        addError(test_name,"MarketOrder->buy != LimitOrder->buy");
-    }
-    if (mo->quantity != lo2->quantity)
-    {
-        addError(test_name,"MarketOrder->quantity != LimitOrder->quantity");
-    }
-    if (mo->person != lo2->person)
-    {
-        addError(test_name,"MarketOrder->person != LimitOrder->person");
-    }
-    if (mo->orderName != lo2->orderName)
-    {
-        addError(test_name,"MarketOrder->orderName != LimitOrder->orderName");
-    }
+    test(mo->buy != lo2->buy,test_name,"MarketOrder->buy != LimitOrder->buy");
+    test(mo->quantity != lo2->quantity,test_name,"MarketOrder->quantity != LimitOrder->quantity");
+    test(mo->person != lo2->person,test_name,"MarketOrder->person != LimitOrder->person");
+    test(mo->orderName != lo2->orderName,test_name,"MarketOrder->orderName != LimitOrder->orderName");
 }
 
 void BasicTests::runAllTests()
 {
+    std::cout<<"Running "<<name<<"\n";
     InitializeCancel();
     Market2LimitOrder();
-    finishTests();
+    std::cout<<errors.str()<<"\n";
 }
 
 BasicTests::~BasicTests()

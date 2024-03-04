@@ -9,7 +9,10 @@ bool Person::has(string CompanyName)
 void Person::printInfo() {
     std::cout<<name<<"\n";
     std::cout<<"$"<<money<<"\n";
-    std::cout<<"Shares: "<<shares<<"\n";
+    for (const auto& [key, value] : investments)
+    {
+        std::cout<<key<<": "<<value<<"\n";
+    }
 }
 
 void Person::print()

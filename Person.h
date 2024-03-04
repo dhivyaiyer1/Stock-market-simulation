@@ -7,13 +7,12 @@ using namespace std;
 class Person {
     private:
     double money;
-    int shares;
     unordered_map<string,int> investments;
     bool has(string CompanyName);
 
     public:
     string name;
-    Person(string n) : name(n), money(1000), shares(0) {};
+    Person(string n) : name(n), money(1000) {};
     void printInfo();
     void print();
     bool canBuy(unsigned int shares, double value);

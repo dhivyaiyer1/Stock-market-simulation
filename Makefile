@@ -3,8 +3,8 @@ CXXFLAGS = -std=c++2a -O0 -ggdb3
 
 all: clean stockmarket
 
-stockmarket: BasicTests CancelOrder LimitOrder main MarketOrder MatchingEngine Order OrderBook Person Test
-	$(CXX) $(CXXFLAGS) -o stockmarket BasicTests.o CancelOrder.o LimitOrder.o main.o MarketOrder.o MatchingEngine.o Order.o OrderBook.o Person.o Test.o
+stockmarket: BasicTests CancelOrder LimitOrder main MarketOrder MatchingEngine Order OrderBook Person Test TestOrder
+	$(CXX) $(CXXFLAGS) -o stockmarket BasicTests.o CancelOrder.o LimitOrder.o main.o MarketOrder.o MatchingEngine.o Order.o OrderBook.o Person.o Test.o TestOrder.o
 
 BasicTests: BasicTests.cpp
 	$(CXX) $(CXXFLAGS) -c BasicTests.cpp
@@ -35,6 +35,9 @@ Person: Person.cpp
 
 Test: Test.cpp
 	$(CXX) $(CXXFLAGS) -c Test.cpp
+
+TestOrder: TestOrder.cpp
+	$(CXX) $(CXXFLAGS) -c TestOrder.cpp
 
 clean:
 	rm -rf *o stockmarket
