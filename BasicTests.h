@@ -8,13 +8,17 @@
 class BasicTests : public Test
 {
     private:
-    LimitOrder* lo;
+    LimitOrder* lo1;
+    LimitOrder* lo2;
     MarketOrder* mo;
     CancelOrder* co;
     Person* pn;
+    void InitializeCancel();
+    void Market2LimitOrder();
 
     public:
     BasicTests();
     ~BasicTests();
+    void debug();
     void runAllTests();
 };

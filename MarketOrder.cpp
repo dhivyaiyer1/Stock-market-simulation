@@ -7,7 +7,7 @@ MarketOrder::MarketOrder(std::string on, Person* p, int q, bool b)
 {}
 
 void MarketOrder::print() {
-    std::cout<<"Market ";
+    std::cout<<"Market, ";
     printInfo();
     std::cout<<"\n\n";
 }
