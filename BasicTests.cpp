@@ -68,15 +68,7 @@ void BasicTests::runAllTests()
 {
     InitializeCancel();
     Market2LimitOrder();
-    if (errors.str() == "")
-    {
-        std::cout<<name<<" passed\n";
-    }
-    else 
-    {
-        std::cout<<errors.str()<<"\n";
-        debug();
-    }
+    finishTests();
 }
 
 BasicTests::~BasicTests()

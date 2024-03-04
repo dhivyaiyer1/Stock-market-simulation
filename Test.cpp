@@ -37,3 +37,16 @@ void Test::addError(std::string test, std::string message)
     }
     errors<<"\t"<<message<<"\n";
 }
+
+void Test::finishTests()
+{
+    if (errors.str() == "")
+    {
+        std::cout<<name<<" passed\n";
+    }
+    else 
+    {
+        std::cout<<errors.str()<<"\n";
+        debug();
+    }
+}

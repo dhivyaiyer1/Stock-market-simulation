@@ -23,6 +23,8 @@ class Test
     int rand_int();
     double rand_price();
     int rand_choice(int range);
+    void finishTests();
     virtual void runAllTests() = 0;
+    virtual void debug() = 0;
     void addError(std::string test,std::string message);
 };
