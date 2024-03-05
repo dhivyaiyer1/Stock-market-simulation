@@ -15,10 +15,11 @@ class BasicTests : public Test
     Person* pn;
     void InitializeCancel();
     void Market2LimitOrder();
+    void tests2run();
 
     public:
     BasicTests();
     ~BasicTests();
     void debug();
-    void runAllTests();
+    
 };

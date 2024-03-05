@@ -4,9 +4,9 @@ BasicTests::BasicTests()
     : Test("Basic Tests")
 {
     pn = new Person("Test Person");
-    lo1 = new LimitOrder("Test Limit Order", pn, rand_price(), rand_int(), rand_bool());
-    mo = new MarketOrder("Test Market Order", pn, rand_int(), rand_bool());
-    lo2 = new LimitOrder(mo, rand_price());
+    lo1 = new LimitOrder("Test Limit Order", pn, rand_price(1,100), rand_int(1,100), rand_bool());
+    mo = new MarketOrder("Test Market Order", pn, rand_int(1,100), rand_bool());
+    lo2 = new LimitOrder(mo, rand_price(1,100));
     co = new CancelOrder("Test cancel order", lo1);
 }
 
@@ -44,12 +44,10 @@ void BasicTests::Market2LimitOrder()
     test(mo->orderName != lo2->orderName,test_name,"MarketOrder->orderName != LimitOrder->orderName");
 }
 
-void BasicTests::runAllTests()
+void BasicTests::tests2run()
 {
-    std::cout<<"Running "<<name<<"\n";
     InitializeCancel();
     Market2LimitOrder();
-    std::cout<<errors.str()<<"\n";
 }
 
 BasicTests::~BasicTests()

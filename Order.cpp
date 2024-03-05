@@ -40,7 +40,6 @@ bool Order::execute(std::string CompanyName, unsigned int shares, double value)
     }
     else
     {
-        std::cout<<orderName<<" can't "<<(buy ? "buy" : "sell")<<"\n";
         return false;
     }
     quantity -= shares;

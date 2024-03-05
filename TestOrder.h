@@ -18,10 +18,10 @@ class TestOrder : public Test
     void sellOrder();
     void cantBuyOrder();
     void cantSellOrder();
+    void tests2run();
 
     public:
     TestOrder();
     ~TestOrder();
     void debug();
-    void runAllTests();
 };

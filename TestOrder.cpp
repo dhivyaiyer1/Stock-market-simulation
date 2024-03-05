@@ -5,10 +5,10 @@ TestOrder::TestOrder()
     , CompanyName("Test company")
 {
     pn = new Person("Person");
-    lo1 = new LimitOrder("Order 1", pn, rand_price(), rand_int()+10, true);
-    lo2 = new LimitOrder("Order 2", pn, 1000+rand_price(), rand_int(), true);
-    lo3 = new LimitOrder("Order 3", pn, rand_price(), lo1->quantity-5, false);
-    lo4 = new LimitOrder("Order 4", pn, rand_price(), 100+rand_int(), false);
+    lo1 = new LimitOrder("Order 1", pn, rand_price(1,100), rand_int(11,110), true);
+    lo2 = new LimitOrder("Order 2", pn, rand_price(1000,1100), rand_int(1,100), true);
+    lo3 = new LimitOrder("Order 3", pn, rand_price(1,100), lo1->quantity-5, false);
+    lo4 = new LimitOrder("Order 4", pn, rand_price(1,100), rand_int(101,200), false);
 }
 
 // buy order
@@ -53,14 +53,12 @@ void TestOrder::cantSellOrder()
     test(lo3->execute("some other company", 1, lo4->price), test_name, "Sell order succeeded with wrong company name");
 }
 
-void TestOrder::runAllTests()
+void TestOrder::tests2run()
 {
-    std::cout<<"Running "<<name<<"\n";
     buyOrder();
     sellOrder();
     cantBuyOrder();
     cantSellOrder();
-    std::cout<<errors.str()<<"\n";
 }
 
 void TestOrder::debug()

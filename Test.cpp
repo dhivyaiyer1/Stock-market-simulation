@@ -7,25 +7,32 @@ Test::Test(std::string name)
     , prev_test("")
 {}
 
-int Test::rand_int()
+int Test::rand_int(int low, int high)
 {
+    std::uniform_int_distribution<int> int_dist{low, high};
     return int_dist(gen);
 }
 
-double Test::rand_price()
+double Test::rand_double(double low, double high)
 {
-    return dbl_dist(gen)/100.0;
+    std::uniform_real_distribution<double> double_dist{low, high};
+    return double_dist(gen);
+}
+
+double Test::rand_price(double low, double high)
+{
+    return rand_int(low*100, high*100)/100.0;
 }
 
 int Test::rand_choice(int range)
 {
-    std::uniform_int_distribution<int> pos_choices(0, range-1);
-    return pos_choices(gen);
+    return rand_int(0, range-1);
 }
 
 bool Test::rand_bool()
 {
-    return rand_int() <= 50;
+    std::uniform_int_distribution<int> bool_dist{0, 1};
+    return bool_dist(gen);
 }
 
 void Test::test(bool condition,std::string test, std::string message)
@@ -38,6 +45,23 @@ void Test::test(bool condition,std::string test, std::string message)
             prev_test = test;
         }
         errors<<"\t"<<message<<"\n";
+    }
+    
+}
+
+void Test::runAllTests()
+{
+    std::cout<<"Running "<<name<<"\n";
+    tests2run();
+    if (errors.str() != "")
+    {
+        std::cout<<errors.str()<<"\n";
+        std::cout<<"Debug output:\n";
+        debug();   
+    }
+    else
+    {
+        std::cout<<name<<" passed\n";
     }
     
 }
