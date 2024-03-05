@@ -1,3 +1,4 @@
+#include "LimitOrder.h"
 #include "CancelOrder.h"
 #include "MatchingEngine.h"
 
@@ -16,4 +17,10 @@ void CancelOrder::action(MatchingEngine& meng)
     OrderBook& orders = buy ? meng.buyOrders : meng.sellOrders;
     orders.cancel(order);
     delete this;
+}
+
+void CancelOrder::debug()
+{
+    std::cout<<"Cancel order for:\n";
+    order->debug();
 }

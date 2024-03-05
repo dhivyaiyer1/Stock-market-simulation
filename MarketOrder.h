@@ -6,4 +6,5 @@ class MarketOrder : public Order {
     MarketOrder(std::string on, Person* p, int q, bool b);
     void print();
     void action(MatchingEngine& meng);
+    void debug();
 };

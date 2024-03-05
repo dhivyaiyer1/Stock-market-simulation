@@ -1,6 +1,7 @@
 #pragma once
-#include "LimitOrder.h"
+#include "Order.h"
 
+class LimitOrder;
 class CancelOrder : public Order
 {
     private:
@@ -10,4 +11,5 @@ class CancelOrder : public Order
     CancelOrder(std::string on,LimitOrder* order);
     void print();
     void action(MatchingEngine& meng);
+    void debug();
 };

@@ -1,4 +1,8 @@
 #include "BasicTests.h"
+#include "LimitOrder.h"
+#include "MarketOrder.h"
+#include "CancelOrder.h"
+#include "Person.h"
 
 BasicTests::BasicTests() 
     : Test("Basic Tests")
@@ -8,21 +12,11 @@ BasicTests::BasicTests()
     mo = new MarketOrder("Test Market Order", pn, rand_int(1,100), rand_bool());
     lo2 = new LimitOrder(mo, rand_price(1,100));
     co = new CancelOrder("Test cancel order", lo1);
-}
-
-void BasicTests::debug()
-{
-
-    std::cout<<"Person:\n";
-    pn->print();
-    std::cout<<"Limit order 1:\n";
-    lo1->print();
-    std::cout<<"Market order:\n";
-    mo->print();
-    std::cout<<"Limit order 2:\n";
-    lo2->print();
-    std::cout<<"Cancel order:\n";
-    co->print();
+    testObjects.push_back(pn);
+    testObjects.push_back(lo1);
+    testObjects.push_back(mo);
+    testObjects.push_back(lo2);
+    testObjects.push_back(co);
 }
 
 // initializes a cancel order from a limit order
@@ -48,13 +42,4 @@ void BasicTests::tests2run()
 {
     InitializeCancel();
     Market2LimitOrder();
-}
-
-BasicTests::~BasicTests()
-{
-    delete pn;
-    delete lo1;
-    delete lo2;
-    delete mo;
-    delete co;
 }

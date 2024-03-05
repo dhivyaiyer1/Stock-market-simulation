@@ -1,5 +1,4 @@
 #include "Order.h"
-#include <iostream>
 #include "MatchingEngine.h"
 #include "Person.h"
 
@@ -44,4 +43,12 @@ bool Order::execute(std::string CompanyName, unsigned int shares, double value)
     }
     quantity -= shares;
     return true;
+}
+
+void Order::debug()
+{
+    std::cout<<"Order name: "<<orderName<<"\n";
+    std::cout<<"Owner: "<<person->name<<"\n";
+    std::cout<<"Side: "<<(buy ? "buy" : "sell")<<"\n";
+    std::cout<<"Quantity: "<<quantity<<"\n";
 }

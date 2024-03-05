@@ -27,3 +27,10 @@ void LimitOrder::action(MatchingEngine& meng)
     OrderBook& orders = buy ? meng.buyOrders : meng.sellOrders;
     orders.insert(this);
 }
+
+void LimitOrder::debug()
+{
+    std::cout<<"Limit order\n";
+    Order::debug();
+    std::cout<<"Price: $"<<price<<"\n";
+}

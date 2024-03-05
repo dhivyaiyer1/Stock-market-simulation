@@ -1,9 +1,10 @@
 #pragma once
 #include "Test.h"
-#include "LimitOrder.h"
-#include "MarketOrder.h"
-#include "CancelOrder.h"
-#include "Person.h"
+
+class LimitOrder;
+class MarketOrder;
+class CancelOrder;
+class Person;
 
 class BasicTests : public Test
 {
@@ -19,7 +20,4 @@ class BasicTests : public Test
 
     public:
     BasicTests();
-    ~BasicTests();
-    void debug();
-    
 };

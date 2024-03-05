@@ -2,9 +2,7 @@
 #include "OrderBook.h"
 
 class Order;
-class MarketOrder;
 class LimitOrder;
-class CancelOrder;
 
 class MatchingEngine {
     private:

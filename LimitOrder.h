@@ -12,4 +12,5 @@ class LimitOrder : public Order {
     LimitOrder(MarketOrder* lo, double pr);
     void print();
     void action(MatchingEngine& meng);
+    void debug();
 };

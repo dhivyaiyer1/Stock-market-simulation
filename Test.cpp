@@ -1,4 +1,5 @@
 #include "Test.h"
+#include "TestObject.h"
 
 Test::Test(std::string name) 
     : name(name)
@@ -49,6 +50,14 @@ void Test::test(bool condition,std::string test, std::string message)
     
 }
 
+void Test::debugAll()
+{
+    for (TestObject* to : testObjects)
+    {
+        to->debug();
+    }
+}
+
 void Test::runAllTests()
 {
     std::cout<<"Running "<<name<<"\n";
@@ -57,11 +66,18 @@ void Test::runAllTests()
     {
         std::cout<<errors.str()<<"\n";
         std::cout<<"Debug output:\n";
-        debug();   
+        debugAll();   
     }
     else
     {
         std::cout<<name<<" passed\n";
+    }   
+}
+
+Test::~Test()
+{
+    for (TestObject* to : testObjects)
+    {
+        delete to;
     }
-    
 }

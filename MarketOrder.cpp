@@ -12,6 +12,12 @@ void MarketOrder::print() {
     std::cout<<"\n\n";
 }
 
+void MarketOrder::debug()
+{
+    std::cout<<"Market order\n";
+    Order::debug();
+}
+
 void MarketOrder::action(MatchingEngine& meng)
 {
     OrderBook& orders = buy ? meng.sellOrders :meng.buyOrders;

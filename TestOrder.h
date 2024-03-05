@@ -1,8 +1,8 @@
 #pragma once
 #include "Test.h"
-#include "LimitOrder.h"
-#include "Person.h"
 
+class LimitOrder;
+class Person;
 
 class TestOrder : public Test
 {
@@ -22,6 +22,4 @@ class TestOrder : public Test
 
     public:
     TestOrder();
-    ~TestOrder();
-    void debug();
 };
