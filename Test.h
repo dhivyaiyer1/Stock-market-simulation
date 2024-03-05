@@ -12,10 +12,10 @@ class Test
     std::random_device rd;
     std::mt19937 gen{rd()};
     std::string prev_test;
-
-    protected:
     std::stringstream errors;
     std::string name;
+
+    protected:
     Test(std::string name);
     bool rand_bool();
     int rand_int(int low, int high);
@@ -27,5 +27,5 @@ class Test
     void test(bool condition,std::string test,std::string message);
 
     public:
-    void runAllTests();
+    void runAllTests(void (*tests)());
 };
