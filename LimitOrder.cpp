@@ -7,13 +7,16 @@ LimitOrder::LimitOrder(std::string on, Person* p, double pr, unsigned int q, boo
     , price(pr)
     , prev(nullptr)
     , next(nullptr)
-{}
+{
+    if (!b) price = (-price);
+}
 
 LimitOrder::LimitOrder(MarketOrder* lo, double pr)
-    : Order(lo->orderName,lo->person,lo->quantity,lo->buy)
-    , price(pr)
-    , prev(nullptr)
-    , next(nullptr)
+    //: Order(lo->orderName,lo->person,lo->quantity,lo->buy)
+    //, price(pr)
+    //, prev(nullptr)
+    //, next(nullptr)
+    : LimitOrder(lo->orderName, lo->person, pr, lo->quantity, lo->buy)
 {}
 
 void LimitOrder::print() {

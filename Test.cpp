@@ -52,10 +52,13 @@ void Test::test(bool condition,std::string test, std::string message)
 
 void Test::debugAll()
 {
+    std::cout<<"Debug output for "<<name<<":\n";
     for (TestObject* to : testObjects)
     {
         to->debug();
+        std::cout<<"\n";
     }
+    std::cout<<"\n\n";
 }
 
 void Test::runAllTests()

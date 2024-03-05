@@ -2,9 +2,10 @@
 #include <queue>
 #include <deque>
 #include <unordered_map>
+#include "TestObject.h"
 
 class LimitOrder;
-class OrderBook 
+class OrderBook : public TestObject
 {
     private:
     bool buy;
@@ -28,11 +29,7 @@ class OrderBook
     };
     class Compare
     {
-        private:
-        bool buy;
-        
         public:
-        Compare(bool buy);
         bool operator()(PriceLevel* below, PriceLevel* above);
     };
     std::priority_queue<OrderBook::PriceLevel*, std::deque<OrderBook::PriceLevel*>, OrderBook::Compare> prices;
@@ -49,4 +46,5 @@ class OrderBook
     void insert(LimitOrder* lo);
     void print();
     bool isEmpty();
+    void debug();
 };

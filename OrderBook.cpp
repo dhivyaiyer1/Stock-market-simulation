@@ -2,14 +2,10 @@
 #include "LimitOrder.h"
 #include <iostream>
 
-// Compare functions
-OrderBook::Compare::Compare(bool buy) 
-    : buy(buy) 
-{}
-
+// Compare function
 bool OrderBook::Compare::operator()(PriceLevel* below, PriceLevel* above)
 {
-    return buy ? above->price >= below->price : above->price <= below->price;
+    return above->price >= below->price;
 }
 
 // PriceLevel functions
@@ -101,7 +97,6 @@ OrderBook::PriceLevel::~PriceLevel()
 
 OrderBook::OrderBook(bool b)
     : buy(b)
-    , prices(OrderBook::Compare(b))
 {}
 
 int OrderBook::price()
@@ -131,9 +126,8 @@ LimitOrder* OrderBook::peek()
 void OrderBook::pop()
 {
     adjust();
-    LimitOrder* lo = peek();
+    prices.top()->pop();
     adjust();
-    delete lo;
 }
 
 void OrderBook::insert(LimitOrder* lo)
@@ -193,4 +187,22 @@ OrderBook::~OrderBook()
     {
         delete value;
     }
+}
+
+void OrderBook::debug()
+{
+    if (buy)
+    {
+        std::cout<<"Buy";
+    }
+    else
+    {
+        std::cout<<"Sell";
+    }
+    std::cout<<" order book:\n";
+    for (const auto& [key, value] : price_map)
+    {
+        value->print();
+    }
+    std::cout<<"\n";
 }

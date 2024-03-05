@@ -4,7 +4,7 @@
 class Order;
 class LimitOrder;
 
-class MatchingEngine {
+class MatchingEngine : public TestObject{
     private:
     void matchLimitOrders();
     void trade(LimitOrder* sell, LimitOrder* buy);
@@ -18,4 +18,5 @@ class MatchingEngine {
     double buyPrice();
     double sellPrice();
     void add(Order* order);
+    void debug();
 };

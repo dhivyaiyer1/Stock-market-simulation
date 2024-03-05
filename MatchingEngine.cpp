@@ -15,12 +15,18 @@ void MatchingEngine::print() {
     sellOrders.print();
 }
 
+void MatchingEngine::debug() {
+	std::cout<<"Printing matching engine for "<<name<<":\n";
+    buyOrders.debug();
+    sellOrders.debug();
+}
+
 double MatchingEngine::buyPrice() {
-    return buyOrders.peek()->price;
+    return buyOrders.price();
 }
 
 double MatchingEngine::sellPrice() {
-    return sellOrders.peek()->price;
+    return -sellOrders.price();
 }
 
 void MatchingEngine::trade(LimitOrder* sell, LimitOrder* buy) {

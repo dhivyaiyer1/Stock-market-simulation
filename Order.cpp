@@ -48,7 +48,7 @@ bool Order::execute(std::string CompanyName, unsigned int shares, double value)
 void Order::debug()
 {
     std::cout<<"Order name: "<<orderName<<"\n";
-    std::cout<<"Owner: "<<person->name<<"\n";
+    if (person != nullptr) std::cout<<"Owner: "<<person->name<<"\n";
     std::cout<<"Side: "<<(buy ? "buy" : "sell")<<"\n";
     std::cout<<"Quantity: "<<quantity<<"\n";
 }
